@@ -1,0 +1,55 @@
+{
+  "bookmarks" : [
+    {
+      "category": "Communicate",
+      "links": [
+        {
+          "name": "Discord",
+          "href": "https://discord.com"
+        },
+        {
+          "name": "Gmail",
+          "href": "http://gmail.com"
+        },
+        {
+          "name": "Slack",
+          "href": "https://slack.com/signin"
+        }
+      ]
+    },
+    {
+      "category": "Cloud",
+      "links": [
+        {
+          "name": "Box",
+          "href": "https://box.com"
+        },
+        {
+          "name": "Dropbox",
+          "href": "https://dropbox.com"
+        },
+        {
+          "name": "Drive",
+          "href": "https://drive.google.com"
+        }
+      ]
+    },
+    {
+      "category": "Design",
+      "links": [
+        {
+          "name": "Awwwards1",
+          "href": "https://awwwards.com"
+        },
+        {
+          "name": "Dribbble",
+          "href": "https://dribbble.com"
+        },
+        {
+          "name": "Muz.li",
+          "href": "https://medium.muz.li/"
+        }
+      ]
+    }
+  ]
+}
