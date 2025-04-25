@@ -21,6 +21,6 @@ EXPOSE 8080
 # USER nobody
 WORKDIR /app
 
-VOLUME ["/storage"]
+VOLUME ["/app/config"]
 ENTRYPOINT  ["/app/suigo"]
 CMD [ "-p=8080" ]
