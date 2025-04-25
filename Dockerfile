@@ -18,7 +18,7 @@ COPY config /app/config
 RUN chown -R nobody:nobody /app/config
 
 EXPOSE 8080
-USER nobody
+# USER nobody
 WORKDIR /app
 
 VOLUME ["/storage"]

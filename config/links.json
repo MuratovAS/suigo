@@ -1,53 +1,53 @@
 {
-  "bookmarks" : [
+  "Bookmarks" : [
     {
-      "category": "Communicate",
-      "links": [
+      "Group": "Communicate",
+      "Links": [
         {
-          "name": "Discord",
-          "href": "https://discord.com"
+          "Name": "Discord",
+          "Href": "https://discord.com"
         },
         {
-          "name": "Gmail",
-          "href": "http://gmail.com"
+          "Name": "Gmail",
+          "Href": "http://gmail.com"
         },
         {
-          "name": "Slack",
-          "href": "https://slack.com/signin"
+          "Name": "Slack",
+          "Href": "https://slack.com/signin"
         }
       ]
     },
     {
-      "category": "Cloud",
-      "links": [
+      "Group": "Cloud",
+      "Links": [
         {
-          "name": "Box",
-          "href": "https://box.com"
+          "Name": "Box",
+          "Href": "https://box.com"
         },
         {
-          "name": "Dropbox",
-          "href": "https://dropbox.com"
+          "Name": "Dropbox",
+          "Href": "https://dropbox.com"
         },
         {
-          "name": "Drive",
-          "href": "https://drive.google.com"
+          "Name": "Drive",
+          "Href": "https://drive.google.com"
         }
       ]
     },
     {
-      "category": "Design",
-      "links": [
+      "Group": "Design",
+      "Links": [
         {
-          "name": "Awwwards1",
-          "href": "https://awwwards.com"
+          "Name": "Awwwards1",
+          "Href": "https://awwwards.com"
         },
         {
-          "name": "Dribbble",
-          "href": "https://dribbble.com"
+          "Name": "Dribbble",
+          "Href": "https://dribbble.com"
         },
         {
-          "name": "Muz.li",
-          "href": "https://medium.muz.li/"
+          "Name": "Muz.li",
+          "Href": "https://medium.muz.li/"
         }
       ]
     }

@@ -35,6 +35,7 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
  	    Description string
  	    Href string
  	    Icon string
+ 	    Group string
  	    Status string
  	}
 
@@ -48,8 +49,12 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 		ContainerDescription	:= ctr.Labels["suigo.description"]
 		ContainerHref 			:= ctr.Labels["suigo.href"]
 		ContainerIcon 			:= ctr.Labels["suigo.icon"]
+		ContainerGroup 			:= ctr.Labels["suigo.group"]
+		if ContainerGroup == "" {
+			ContainerGroup = "other";
+		}
 		ContainerState 			:= ctr.State
-		apps = append(apps, App{ContainerName,ContainerDescription,ContainerHref,ContainerIcon, ContainerState})
+		apps = append(apps, App{ContainerName,ContainerDescription,ContainerHref,ContainerIcon, ContainerGroup, ContainerState})
 	}
 	
 	appsJson, err := json.Marshal(apps)
@@ -58,7 +63,7 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// print result
-    fmt.Fprintf(w, "{\"apps\" : " + string(appsJson) + "}")
+    fmt.Fprintf(w, "{\"Apps\" : " + string(appsJson) + "}")
 }
 
 var host *string
@@ -74,15 +79,13 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	
 	flag.Parse()
 			
 	fileAssets := http.FileServer(http.Dir("./assets")) //is it safe at all?
+	fileConfig := http.FileServer(http.Dir("./config")) //is it safe at all?
 	http.Handle("/", fileAssets)
-	http.HandleFunc("/apps.json", appsHandler)
-	http.HandleFunc("/links.json", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "./config/links.json")
-		})
+	http.Handle("/config/", http.StripPrefix("/config/", fileConfig))
+	http.HandleFunc("/config/apps.json", appsHandler)
 
 	address := fmt.Sprintf("%s:%d", *host, *port)
 	fmt.Printf("Starting server: " + address + "\n")
