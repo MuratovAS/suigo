@@ -75,6 +75,12 @@ h4 {
 	height: 10px;
 }
 
+b {
+	color: var(--color-text-pri);
+	text-decoration: none;
+	cursor: default;
+}
+
 a {
 	color: var(--color-text-pri);
 	text-decoration: none;
@@ -84,6 +90,11 @@ a:hover {
 	text-decoration: underline;
 	webkit-text-decoration-color: var(--color-text-acc);
 	webkit-text-decoration-skip: true;
+}
+
+b {
+	color: var(--color-text-pri);
+	text-decoration: none;
 }
 
 span {
@@ -176,6 +187,12 @@ span {
 	justify-content: center;
 	flex: 1;
 	overflow: hidden;
+}
+
+.apps_text b {
+	font-size: 1em;
+	font-weight: 500;
+	/* text-transform: uppercase; */
 }
 
 .apps_text a {
