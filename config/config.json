@@ -1,10 +1,7 @@
 {
-  "language": "en-GB",
   "defaultTheme": "tron",
   "backgroundImage": "",
   "useAppGroup": false,
-  "withSettings": true,
-  "withApps": true,
   "withLinks": true,
   "labels": {
     "Bookmarks": "Bookmarks",

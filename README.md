@@ -25,7 +25,7 @@ This project exists thanks to [SUI](https://github.com/dominicrico/sui-extended)
 ```yml
 services:
   suigo:
-    image: ghcr.io/muratovas/suigo:0.0.1
+    image: ghcr.io/muratovas/suigo
     container_name: suigo
     restart: unless-stopped
     ports:
@@ -149,3 +149,13 @@ Add names for the categories you wish to define and add the bookmarks for each c
 Please note:
 
 - No `,` at the end of the last bookmark in a category and at the end of the last category
+
+## Changelog:
+
+### v0.0.2
+- settings removed
+- buttons are displayed as cards
+- optimized (less code)
+
+### v0.0.1
+- Init

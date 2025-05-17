@@ -1,202 +1,133 @@
-let config = {}
 
-Handlebars.registerHelper('if_eqn', function(a, b, opts) {
-		if (a != b) {
-				return opts.fn(this);
-		} else {
-				return opts.inverse(this);
-		}
-});
-
-const date = () => {
-	const currentDate = new Date()
-	const dateOptions = {
-		weekday: 'long',
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric'
-	}
-	const date = currentDate.toLocaleDateString(config.language, dateOptions)
-	document.getElementById('header_date').innerHTML = date
+async function loadConfig() {
+  const response = await fetch('/config/config.json');
+  return await response.json();
 }
 
-const greet = async () => {
-	const currentTime = new Date()
-	const greet = Math.floor(currentTime.getHours() / 6)
-	switch (greet) {
-		case 0:
-			document.getElementById('header_greet').innerHTML = config.greetings.night
-			break
-		case 1:
-			document.getElementById('header_greet').innerHTML =
-				config.greetings.morning
-			break
-		case 2:
-			document.getElementById('header_greet').innerHTML =
-				config.greetings.afternoon
-			break
-		case 3:
-			document.getElementById('header_greet').innerHTML =
-				config.greetings.evening
-			break
-	}
-
-	// if (config.useOauth2Proxy) {
-	//   const user = await fetchUser()
-	//   document.getElementById(
-	//     'header_greet'
-	//   ).innerHTML += `, ${user.preferredUsername}`
-	// }
-
-	document.getElementById('header_greet').innerHTML += '!'
+async function loadServices() {
+  const response = await fetch('/config/apps.json');
+  return await response.json();
 }
 
-
-const renderTemplate = (fileName, data) => {
-	const src = document.getElementById(`${fileName}-template`).innerHTML
-	const template = Handlebars.compile(src)
-	const rendered = template({ ...data, labels: config.labels })
-
-	document.getElementById(fileName).innerHTML += rendered
+async function loadLinks() {
+  const response = await fetch('/config/links.json');
+  return await response.json();
 }
 
-const fetchAndRender = async (fileName) => {
-	const res = await fetch(`config/${fileName}.json`)
-	const data = await res.json()
-
-	if (fileName === 'apps' && config.useAppGroup) {
-		const categories = data.Apps.reduce((acc, app) => {
-			if (!acc.includes(app.Group)) acc.push(app.Group)
-			return acc
-		}, [])
-
-		const sortedData = categories.map((Group) => {
-			return {
-				Group,
-				Apps: data.Apps
-					.filter((app) => app.Group === Group)
-					.map((app) => {
-						return {
-							...app,
-							Href: app.Href
-						}
-					})
-			}
-		})
-
-		sortedData.forEach((item) => renderTemplate(fileName, item))
-	} else {
-		renderTemplate(fileName, data)
-	}
-
-	return null
+function getGreeting(greetings) {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return greetings.morning;
+  if (hour >= 12 && hour < 17) return greetings.afternoon;
+  if (hour >= 17 && hour < 22) return greetings.evening;
+  return greetings.night;
 }
 
-// const fetchUser = async () => {
-//   const res = await fetch(oauth2UserInfoURL, {
-//     credentials: 'include',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     }
-//   })
-// 
-//   return await res.json()
-// }
-
-const fetchConfig = async () => {
-	const res = await fetch('config/config.json')
-	const data = await res.json()
-
-	config = data
-
-	for (const theme of Object.keys(config.themes)) {
-		const src = document.getElementById(`theme-button`).innerHTML
-		const template = Handlebars.compile(src)
-		const rendered = template({ theme })
-
-		document.getElementById('modal-theme').innerHTML += rendered
-	}
-
-	if (config.backgroundImage && config.backgroundImage.length > 0) {
-		document.documentElement.style.setProperty(
-			'background-image',
-			`url(${config.backgroundImage}`
-		)
-		document.documentElement.style.setProperty('background-size', `cover`)
-		document.documentElement.style.setProperty('background-repeat', `no-repeat`)
-		document.documentElement.style.setProperty('background-attachment', `fixed`)
-		document.body.style.setProperty('background', `transparent`)
-	}
-
-	return true
+function applyTheme(theme, config) {
+  document.documentElement.style.setProperty('--color-background', theme['color-background']);
+  document.documentElement.style.setProperty('--color-text-pri', theme['color-text-pri']);
+  document.documentElement.style.setProperty('--color-text-acc', theme['color-text-acc']);
+  document.documentElement.style.setProperty('--background-image', config.backgroundImage ? `url(${config.backgroundImage})` : 'none');
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-	await fetchConfig()
+async function renderServices(apps) {
+  const servicesContainer = document.getElementById('services');
+  servicesContainer.innerHTML = '';
 
-	if (! config.withSettings) {
-		document.getElementById('modal').style.display = 'none'
-		document.getElementById('modal_init').style.display = 'none'
-	}
+  const config = await loadConfig();
 
-	if (config.withApps) await fetchAndRender('apps')
-	if (config.withLinks) await fetchAndRender('links')
+  if (config.useAppGroup) {
+    const groups = {};
+    apps.forEach(app => {
+      if (!groups[app.Group]) {
+        groups[app.Group] = [];
+      }
+      groups[app.Group].push(app);
+    });
 
+    Object.entries(groups).forEach(([group, groupApps]) => {
+      const groupTitle = document.createElement('h2');
+      groupTitle.className = 'group-title';
+      groupTitle.textContent = group;
+      servicesContainer.appendChild(groupTitle);
 
-	setValueFromLocalStorage('color-background')
-	setValueFromLocalStorage('color-text-pri')
-	setValueFromLocalStorage('color-text-acc')
+      groupApps.forEach(renderApp);
+    });
+  } else {
+    apps.forEach(renderApp);
+  }
 
-	date()
-	greet()
-})
+  function renderApp(app) {
+    const card = document.createElement(app.Href ? 'a' : 'div');
+    if (app.Href) card.href = app.Href;
+    card.className = 'service-card';
 
-const setValue = (property, value) => {
-	if (!value) return
+    card.innerHTML = `
+      <div class="service-icon ${app.Status === 'running' ? 'status-running' : ''}">
+        <iconify-icon icon="${app.Icon}"></iconify-icon>
+      </div>
+      <div class="service-info">
+        <h3>${app.Name}</h3>
+        <p>${app.Description}</p>
+      </div>
+    `;
 
-	document.documentElement.style.setProperty(`--${property}`, value)
-
-	const input = document.querySelector(`#${property}`)
-	if (input) {
-		value = value.replace('px', '')
-		input.value = value
-	}
+    servicesContainer.appendChild(card);
+  }
 }
 
-const setValueFromLocalStorage = (property) => {
-	console.log(config.defaultTheme)
-	const value =
-		localStorage.getItem(property) ||
-		config.themes[config.defaultTheme][property]
-	setValue(property, value)
+function formatDate() {
+  const date = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('en-US', options).toUpperCase();
 }
 
-const setTheme = (options) => {
-	for (const option of Object.keys(options)) {
-		const value = options[option]
+async function renderLinks(bookmarks) {
+  const linksContainer = document.getElementById('bookmarks');
+  linksContainer.innerHTML = '';
 
-		setValue(option, value)
-		localStorage.setItem(option, value)
-	}
+  const columnsContainer = document.createElement('div');
+  columnsContainer.className = 'links-columns';
+
+  bookmarks.forEach(group => {
+    const column = document.createElement('div');
+    column.className = 'links-column';
+
+    const groupTitle = document.createElement('h2');
+    groupTitle.className = 'group-title';
+    groupTitle.textContent = group.Group;
+    column.appendChild(groupTitle);
+
+    group.Links.forEach(link => {
+      const linkCard = document.createElement('a');
+      linkCard.href = link.Href;
+      linkCard.className = 'service-card';
+      linkCard.innerHTML = `
+        <div class="service-info status-running">
+          <h3>${link.Name}</h3>
+        </div>
+      `;
+      column.appendChild(linkCard);
+    });
+
+    columnsContainer.appendChild(column);
+  });
+
+  linksContainer.appendChild(columnsContainer);
 }
 
-const observer = new MutationObserver((mutationsList) => {
-	mutationsList.forEach((mutation) => {
-		if (mutation.type === 'childList') {
-			mutation.addedNodes.forEach((node) => {
-				if (
-					node.nodeType === Node.ELEMENT_NODE &&
-					node.hasAttribute('data-theme')
-				) {
-					node.addEventListener('click', () => {
-						const theme = node.dataset.theme
+async function initialize() {
+  const config = await loadConfig();
+  const services = await loadServices();
+  const links = await loadLinks();
 
-						setTheme(config.themes[theme])
-					})
-				}
-			})
-		}
-	})
-})
+  document.getElementById('current-date').textContent = formatDate();
+  document.getElementById('greeting').textContent = getGreeting(config.greetings);
+  applyTheme(config.themes[config.defaultTheme], config);
+  await renderServices(services.Apps);
 
-observer.observe(document.body, { childList: true, subtree: true })
+  if (config.withLinks) {
+    await renderLinks(links.Bookmarks);
+  }
+}
+
+initialize();
