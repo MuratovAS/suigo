@@ -87,19 +87,16 @@ Change the config.json to your likings.
 
 | Option                | Default          | Description                         |
 | --------------------- | ---------------- | ----------------------------------- |
-| `language`            | `en-GB`          | The language code for localization. |
+| `defaultTheme`        | `blackboard`     | The default theme to use.           |
+| `backgroundImage`     | `""`             | URL for the background image.       |
+| `useAppGroup`         | `false`          | Whether to categorize applications. |
+| `withLinks`           | `true`           | Whether to show links.              |
+| `labels.Bookmarks`    | `Bookmarks`      | Label text for bookmarks.           |
+| `labels.Applications` | `Applications`   | Label text for applications.        |
 | `greetings.morning`   | `Good Morning`   | Greeting text for the morning.      |
 | `greetings.afternoon` | `Good Afternoon` | Greeting text for the afternoon.    |
 | `greetings.evening`   | `Good Evening`   | Greeting text for the evening.      |
 | `greetings.night`     | `Good Night`     | Greeting text for the night.        |
-| `useAppGroup`         | `false`          | Whether to categorize applications. |
-| `withApps`            | `true`           | Whether to show applications.       |
-| `withLinks`           | `true`           | Whether to show links.              |
-| `withSettings`        | `true`           | Whether to show settings.           |
-| `labels.Bookmarks`    | `Bookmarks`      | Label text for bookmarks.           |
-| `labels.Applications` | `Applications`   | Label text for applications.        |
-| `backgroundImage`     | `""`             | URL for the background image.       |
-| `defaultTheme`        | `blackboard`     | The default theme to use.           |
 
 ### Theme Configuration
 
