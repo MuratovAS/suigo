@@ -3,6 +3,7 @@
   "backgroundImage": "",
   "useAppGroup": false,
   "withLinks": true,
+  "withApp": true,
   "labels": {
     "Bookmarks": "Bookmarks",
     "Applications": "Applications"

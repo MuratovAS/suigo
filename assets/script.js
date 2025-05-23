@@ -123,7 +123,10 @@ async function initialize() {
   document.getElementById('current-date').textContent = formatDate();
   document.getElementById('greeting').textContent = getGreeting(config.greetings);
   applyTheme(config.themes[config.defaultTheme], config);
-  await renderServices(services.Apps);
+
+  if (config.withApp) {
+    await renderServices(services.Apps);
+  }
 
   if (config.withLinks) {
     await renderLinks(links.Bookmarks);

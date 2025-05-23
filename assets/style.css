@@ -84,7 +84,9 @@ header {
 
 .service-icon {
   font-size: 2rem;
-  color: var(--color-text-pri)
+  color: var(--color-text-pri);
+  display: flex;
+  align-items: center;
 }
 
 .service-info h3 {
@@ -99,6 +101,11 @@ header {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--color-text-acc);
+}
+
+#bookmarks:empty {
+  border-top: none;
+  padding-top: 0;
 }
 
 .links-columns {
