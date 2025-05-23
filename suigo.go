@@ -15,7 +15,7 @@ const (
 	APIVersion       = "1.25"
 )
 
-func appsHandler(w http.ResponseWriter, r *http.Request) {
+func servicesHandler(w http.ResponseWriter, r *http.Request) {
     // init docker client
 	apiClient, err := client.NewClientWithOpts(client.FromEnv, client.WithVersion(APIVersion))
 	if err != nil {
@@ -30,7 +30,7 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// parsing ContainerList
- 	type App struct {
+ 	type Service struct {
  	    Name string
  	    Description string
  	    Href string
@@ -39,7 +39,7 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
  	    Status string
  	}
 
-	apps := make([]App, 0)
+	services := make([]Service, 0)
 
 	for _, ctr := range containers {
 		ContainerName			:= ctr.Labels["suigo.name"]
@@ -54,16 +54,16 @@ func appsHandler(w http.ResponseWriter, r *http.Request) {
 			ContainerGroup = "other";
 		}
 		ContainerState 			:= ctr.State
-		apps = append(apps, App{ContainerName,ContainerDescription,ContainerHref,ContainerIcon, ContainerGroup, ContainerState})
+		services = append(services, Service{ContainerName,ContainerDescription,ContainerHref,ContainerIcon, ContainerGroup, ContainerState})
 	}
 	
-	appsJson, err := json.Marshal(apps)
+	servicesJson, err := json.Marshal(services)
 	if err != nil {
 		panic(err)
 	}
 
 	// print result
-    fmt.Fprintf(w, "{\"Apps\" : " + string(appsJson) + "}")
+    fmt.Fprintf(w, "{\"Services\" : " + string(servicesJson) + "}")
 }
 
 var host *string
@@ -85,7 +85,7 @@ func main() {
 	fileConfig := http.FileServer(http.Dir("./config")) //is it safe at all?
 	http.Handle("/", fileAssets)
 	http.Handle("/config/", http.StripPrefix("/config/", fileConfig))
-	http.HandleFunc("/config/apps.json", appsHandler)
+	http.HandleFunc("/config/services.json", servicesHandler)
 
 	address := fmt.Sprintf("%s:%d", *host, *port)
 	fmt.Printf("Starting server: " + address + "\n")

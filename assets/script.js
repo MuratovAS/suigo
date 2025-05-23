@@ -5,7 +5,7 @@ async function loadConfig() {
 }
 
 async function loadServices() {
-  const response = await fetch('/config/apps.json');
+  const response = await fetch('/config/services.json');
   return await response.json();
 }
 
@@ -29,7 +29,7 @@ function applyTheme(theme, config) {
   document.documentElement.style.setProperty('--background-image', config.backgroundImage ? `url(${config.backgroundImage})` : 'none');
 }
 
-async function renderServices(apps) {
+async function renderServices(services) {
   const servicesContainer = document.getElementById('services');
   servicesContainer.innerHTML = '';
 
@@ -37,11 +37,11 @@ async function renderServices(apps) {
 
   if (config.useAppGroup) {
     const groups = {};
-    apps.forEach(app => {
-      if (!groups[app.Group]) {
-        groups[app.Group] = [];
+    services.forEach(service => {
+      if (!groups[service.Group]) {
+        groups[service.Group] = [];
       }
-      groups[app.Group].push(app);
+      groups[service.Group].push(service);
     });
 
     Object.entries(groups).forEach(([group, groupApps]) => {
@@ -50,24 +50,24 @@ async function renderServices(apps) {
       groupTitle.textContent = group;
       servicesContainer.appendChild(groupTitle);
 
-      groupApps.forEach(renderApp);
+      groupApps.forEach(renderService);
     });
   } else {
-    apps.forEach(renderApp);
+    services.forEach(renderService);
   }
 
-  function renderApp(app) {
-    const card = document.createElement(app.Href ? 'a' : 'div');
-    if (app.Href) card.href = app.Href;
+  function renderService(service) {
+    const card = document.createElement(service.Href ? 'a' : 'div');
+    if (service.Href) card.href = service.Href;
     card.className = 'service-card';
 
     card.innerHTML = `
-      <div class="service-icon ${app.Status === 'running' ? 'status-running' : ''}">
-        <iconify-icon icon="${app.Icon}"></iconify-icon>
+      <div class="service-icon ${service.Status === 'running' ? 'status-running' : ''}">
+        <iconify-icon icon="${service.Icon}"></iconify-icon>
       </div>
       <div class="service-info">
-        <h3>${app.Name}</h3>
-        <p>${app.Description}</p>
+        <h3>${service.Name}</h3>
+        <p>${service.Description}</p>
       </div>
     `;
 
@@ -125,7 +125,7 @@ async function initialize() {
   applyTheme(config.themes[config.defaultTheme], config);
 
   if (config.withApp) {
-    await renderServices(services.Apps);
+    await renderServices(services.Services);
   }
 
   if (config.withLinks) {
